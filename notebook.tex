@@ -304,7 +304,9 @@ In India, Some companies like OLX are helping their users to sell their
 products online. But What Sellers (Customer for company) don't know
 about it is that what details they are filling, can make their items
 price go up or down. Machine Learning can help in predicting the
-likelihood of the price depending on the info provided by the seller.
+likelihood of the price depending on the info provided by the seller and
+directly suggest that seller what need to be updated to make more
+effective product sell.
 
 Similar to this situation, Avito (Russian based company) created a
 challenge on kaggle (https://www.kaggle.com/c/avito-demand-prediction)
@@ -365,8 +367,6 @@ Kaggle challenge, I will be using the following metric:
 
     \subsection{II. Analysis}\label{ii.-analysis}
 
-    \subsubsection{Data Exploration}\label{data-exploration}
-
     \begin{Verbatim}[commandchars=\\\{\}]
 {\color{incolor}In [{\color{incolor}1}]:} \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
         \PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
@@ -375,6 +375,8 @@ Kaggle challenge, I will be using the following metric:
         \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
 \end{Verbatim}
 
+
+    \subsubsection{Data Exploration}\label{data-exploration}
 
     Dataset is available under challenge:
 https://www.kaggle.com/c/avito-demand-prediction/data
@@ -553,8 +555,9 @@ Visualization}\label{exploratory-visualization}
 \item
   Testing data have 508438.
 \item
-  I will do split of data in training set and validation set in ratio of
-  0.75:0.25.
+  ** Splitting our dataset in train:validation bins in ratio of
+  \sout{0.75:0.25} 0.85:0.15 .** As I go through my work, I update my
+  ratio in final run.
 \item
   Deal\_probability will be the target column.
 \end{itemize}
@@ -707,6 +710,15 @@ expectations.
 
     \subsubsection{Justification}\label{justification}
 
+    Unseen data can tell us about a model scalability, how much good it is.
+As I checked my model submission on kaggle private dataset, I am getting
+accuracy to what I expect with the limited dataset I used here. Because
+of reduction of dataset, Image processing \& text to word vector
+conversion got skiped which made the model fast to predict to comparable
+best models exist for this problems at kaggle. Hence, These models seems
+to be robust. Alongside this, the model seems to be trustable and aligns
+well with expected solutions outcomes.
+
     \subsection{V. Conclusion}\label{v.-conclusion}
 
     Submission @Kaggle of csv file.
@@ -719,7 +731,51 @@ expectations.
 
     \subsubsection{Free-Form Visualization}\label{free-form-visualization}
 
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}8}]:} \PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{train\PYZus{}output} \PY{o}{\PYZgt{}} \PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{)}
+        \PY{n+nb}{print}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{train\PYZus{}output} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+177754
+1325670
+
+    \end{Verbatim}
+
+    To check how the dataset vary with different \texttt{deal\_probability}.
+In below graph, we can check it with 1\% of the dataset that its more
+towards low range in \texttt{deal\_probability}.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}9}]:} \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{)}
+        \PY{n}{dataToShow} \PY{o}{=} \PY{l+m+mf}{0.01} \PY{c+c1}{\PYZsh{} percentage}
+        \PY{n}{indexes} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{randint}\PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,} \PY{n+nb}{len}\PY{p}{(}\PY{n}{train\PYZus{}output}\PY{p}{)}\PY{p}{,} \PY{n}{size}\PY{o}{=}\PY{n+nb}{int}\PY{p}{(}\PY{n}{dataToShow} \PY{o}{*} \PY{n+nb}{len}\PY{p}{(}\PY{n}{train\PYZus{}output}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+        \PY{n}{x\PYZus{}select} \PY{o}{=} \PY{n}{train\PYZus{}output}\PY{o}{.}\PY{n}{iloc}\PY{p}{[}\PY{n}{indexes}\PY{p}{]}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Ids}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Deal Probability}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Probability variation}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        
+        \PY{n}{plt}\PY{o}{.}\PY{n}{scatter}\PY{p}{(}\PY{n}{indexes}\PY{p}{,} \PY{n}{x\PYZus{}select}\PY{p}{)}
+        \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_44_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
     \subsubsection{Reflection}\label{reflection}
+
+    As I find that I need to learn fasttext for text conversion, I tried to
+do that with some research. I was able to produce word vectors for the
+text columns too. But later I found that these columns as per word
+vector will consist of nested list of numeric
+data(\texttt{experiments/Capstone\ Solution.ipynb}) for each column
+which any boost algo didn't expect in its dataset. So, After this
+searching, I had to drop those columns for this projects to complete it
+and later learn more about them so that I can do better in NLP part.
 
     \subsubsection{Improvement}\label{improvement}
 
